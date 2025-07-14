@@ -36,10 +36,12 @@ jobs:
 
     - name: Pack NuGet (iNKORE.UI.WPF.Modern.Controls)
       run: |
-        dotnet pack source\iNKORE.UI.WPF.Modern.Controls\iNKORE.UI.WPF.Modern.Controls.csproj `
-          --configuration Release `
-          --output artifacts `
+        msbuild source\iNKORE.UI.WPF.Modern.Controls\iNKORE.UI.WPF.Modern.Controls.csproj `
+          /t:Pack `
+          /p:Configuration=Release `
+          /p:PackageOutputPath=artifacts `
           /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg
+
 
     - name: Upload NuGet package artifact
       uses: actions/upload-artifact@v4
