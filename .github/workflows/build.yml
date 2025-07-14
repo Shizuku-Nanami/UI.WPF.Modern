@@ -1,18 +1,16 @@
 name: Build Controls & Gallery
 
-# This workflow builds the iNKORE.UI.WPF.Modern.Controls and iNKORE.UI.WPF.Modern.Gallery projects and uploads the artifacts for use in other workflows or releases.
-
 on:
   push:
-    branches: [  ]
+    branches: [ ]
   pull_request:
-    branches: [  ]
+    branches: [ ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
     - uses: actions/checkout@v3
       with:
@@ -35,6 +33,19 @@ jobs:
     - name: Build solution
       run: |
         msbuild iNKORE.UI.WPF.Modern.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    - name: Pack NuGet (iNKORE.UI.WPF.Modern.Controls)
+      run: |
+        dotnet pack source\iNKORE.UI.WPF.Modern.Controls\iNKORE.UI.WPF.Modern.Controls.csproj `
+          --configuration Release `
+          --output artifacts `
+          /p:IncludeSymbols=true /p:SymbolPackageFormat=snupkg
+
+    - name: Upload NuGet package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: nuget-packages
+        path: artifacts\*.nupkg
 
     - name: Upload Controls artifact (.NET 6.0)
       uses: actions/upload-artifact@v4
